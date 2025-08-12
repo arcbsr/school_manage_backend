@@ -1,0 +1,31 @@
+# Task ID: 7
+# Title: Manual attendance management
+# Status: pending
+# Dependencies: 5
+# Priority: high
+# Description: CRUD for attendance with role-based permissions and filters.
+# Details:
+Admin/Staff can add/edit/delete; Teacher/Student/Parent read-only per scope. One record per student per date per class.
+
+# Test Strategy:
+Validation for duplicates, filter tests (by date, class, student), and permissions.
+
+# Subtasks:
+## 1. Attendance model and validators [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. CRUD /api/attendance/ with filters [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3. Reporting: per student/class/date range [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

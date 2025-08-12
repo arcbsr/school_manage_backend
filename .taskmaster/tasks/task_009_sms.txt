@@ -1,0 +1,31 @@
+# Task ID: 9
+# Title: PDF report generation
+# Status: pending
+# Dependencies: 5, 8
+# Priority: medium
+# Description: Generate admit cards, testimonials, and report cards as PDFs.
+# Details:
+Use reportlab or xhtml2pdf; build templates; synchronous generation for single-student docs.
+
+# Test Strategy:
+Byte-size/hash snapshot tests; content checks for key fields.
+
+# Subtasks:
+## 1. Admit card template + endpoint (/api/reports/) [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. Testimonial template + endpoint [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3. Report card template + endpoint [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

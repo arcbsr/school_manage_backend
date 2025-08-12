@@ -1,0 +1,49 @@
+# Task ID: 1
+# Title: Project initialization and configuration
+# Status: in-progress
+# Dependencies: None
+# Priority: high
+# Description: Initialize Django + DRF project with PostgreSQL, base settings, CORS, environment config, and tooling.
+# Details:
+Set up Django 5.x project, DRF, PostgreSQL connection, python-decouple, django-cors-headers, basic settings structure, and app scaffolding.
+
+# Test Strategy:
+Run migrations, health endpoint, and settings smoke tests.
+
+# Subtasks:
+## 1. Create Django project and core app [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. Configure PostgreSQL and env variables [in-progress]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3. Install and configure DRF, CORS, decouple [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 4. Base settings (logging, timezone, pagination) [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 5. Health check endpoint [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 6. Use SQLite for local development [pending]
+### Dependencies: None
+### Description: Rely on the default SQLite fallback in `Backend/config/settings.py` by not setting PostgreSQL env vars. Ensure migrations run and app starts successfully.
+### Details:
+
+

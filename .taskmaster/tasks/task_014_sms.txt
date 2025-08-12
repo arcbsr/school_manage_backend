@@ -1,0 +1,25 @@
+# Task ID: 14
+# Title: Deployment and environment setup
+# Status: pending
+# Dependencies: 1, 2
+# Priority: medium
+# Description: Production-ready settings, environment files, and basic CI config.
+# Details:
+.env templates, DEBUG flags, allowed hosts, database URLs, and simple CI (pytest).
+
+# Test Strategy:
+CI passes with lint + unit/integration tests.
+
+# Subtasks:
+## 1. .env.example and secrets management guidance [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. Basic CI workflow to run tests [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

@@ -1,0 +1,25 @@
+# Task ID: 8
+# Title: Results management
+# Status: pending
+# Dependencies: 6
+# Priority: high
+# Description: Teachers upload results; role-based retrieval and validation against enrollment.
+# Details:
+Ensure results map to enrolled students and valid subject-class pairs.
+
+# Test Strategy:
+Upload tests, invalid enrollment rejections, list/filter tests.
+
+# Subtasks:
+## 1. Result model and validation rules [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. POST/GET /api/results/ with filters [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

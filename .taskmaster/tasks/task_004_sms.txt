@@ -1,0 +1,43 @@
+# Task ID: 4
+# Title: Core school structure models and CRUD
+# Status: pending
+# Dependencies: 3
+# Priority: high
+# Description: Implement Branch, Shift, Section, Class, Subject with CRUD endpoints and filters.
+# Details:
+Create models, serializers, viewsets, routers; add django-filter; pagination; RBAC for Admin on writes.
+
+# Test Strategy:
+Model tests, serializer validation tests, list/create/update/delete API tests.
+
+# Subtasks:
+## 1. Branch model + CRUD (/api/schools/) [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. Shift model + CRUD (/api/shifts/) [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3. Class model + CRUD (/api/classes/) [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 4. Section model + CRUD (/api/sections/) [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 5. Subject model + CRUD (/api/subjects/) [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

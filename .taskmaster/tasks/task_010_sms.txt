@@ -1,0 +1,25 @@
+# Task ID: 10
+# Title: Settings and configuration endpoints
+# Status: pending
+# Dependencies: 1, 3
+# Priority: medium
+# Description: Admin endpoints for academic year, sessions, holidays, branding.
+# Details:
+Model(s) for settings; file upload for logo; color theme storage.
+
+# Test Strategy:
+CRUD tests; file upload tests; RBAC checks.
+
+# Subtasks:
+## 1. Settings model and serializer [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. GET/POST /api/settings/ [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

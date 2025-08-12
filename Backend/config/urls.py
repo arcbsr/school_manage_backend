@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
-from core.views import db_health_view, ProtectedHelloView, APIKeyHelloView
+from core.views import db_health_view, ProtectedHelloView, APIKeyHelloView, LogoutView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -35,6 +35,7 @@ urlpatterns = [
     # Auth
     path('api/auth/login', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/auth/logout', LogoutView.as_view(), name='token_blacklist'),
     # Sample protected view
     path('api/protected', ProtectedHelloView.as_view(), name='protected-hello'),
     # OpenAPI schema & UIs

@@ -1,0 +1,41 @@
+---
+description: Standardize Swagger/OpenAPI setup using drf-spectacular for Django APIs
+globs: Backend/config/urls.py, Backend/config/settings.py
+alwaysApply: true
+---
+
+- **Use drf-spectacular for schema and UI**
+  - Ensure `drf_spectacular` is in `INSTALLED_APPS` in `[settings.py](mdc:Backend/config/settings.py)`
+  - Configure `REST_FRAMEWORK.DEFAULT_SCHEMA_CLASS = 'drf_spectacular.openapi.AutoSchema'`
+  - Expose schema and docs in `[urls.py](mdc:Backend/config/urls.py)`:
+    ```python
+    from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+
+    urlpatterns += [
+        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+        path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    ]
+    ```
+
+- **Security schemes**
+  - Keep `SPECTACULAR_SETTINGS.SECURITY` to include both API Key and Bearer auth aligning to current project settings:
+    ```python
+    SPECTACULAR_SETTINGS = {
+      'SECURITY': [
+        {'apiKey': []},
+        {'BearerAuth': []},
+      ],
+      'SECURITY_SCHEMES': {
+        'apiKey': {'type': 'apiKey','in': 'header','name': 'X-API-Key'},
+        'BearerAuth': {'type': 'http','scheme': 'bearer','bearerFormat': 'JWT'},
+      },
+    }
+    ```
+
+- **Auth endpoints naming**
+  - Name JWT endpoints clearly: `token_obtain_pair`, `token_refresh`, `token_blacklist` to appear cleanly in docs
+
+- **Examples**
+  - The project already follows this pattern in `[urls.py](mdc:Backend/config/urls.py)` and `[settings.py](mdc:Backend/config/settings.py)`
+

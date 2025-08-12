@@ -1,0 +1,25 @@
+# Task ID: 13
+# Title: Pagination and filtering standards
+# Status: pending
+# Dependencies: 4, 5
+# Priority: medium
+# Description: Apply DRF pagination and django-filter consistently across list endpoints.
+# Details:
+Standardize page size, max limits, and filter fields per resource.
+
+# Test Strategy:
+List endpoints tests verifying pagination and filters.
+
+# Subtasks:
+## 1. Global pagination settings [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. Add filters to all list endpoints [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

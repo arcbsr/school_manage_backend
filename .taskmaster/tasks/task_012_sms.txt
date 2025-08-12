@@ -1,0 +1,25 @@
+# Task ID: 12
+# Title: Security hardening
+# Status: pending
+# Dependencies: 2, 3
+# Priority: high
+# Description: Best practices for auth, password hashing, CORS allowlist, and headers.
+# Details:
+Secure settings, HTTPS assumptions, CSRF where applicable, and helmet-like headers via Django middleware.
+
+# Test Strategy:
+Security lint checks and penetration smoke tests (where applicable).
+
+# Subtasks:
+## 1. CORS allowlist and secure settings [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. Audit password hashing and token lifetimes [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

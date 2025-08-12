@@ -1,0 +1,25 @@
+# Task ID: 11
+# Title: Observability and error handling
+# Status: pending
+# Dependencies: 1, 2
+# Priority: medium
+# Description: Structured logging, request IDs, consistent error schema, and global exception handling.
+# Details:
+Add middleware for request IDs; DRF exception handler returning {code, message, details}.
+
+# Test Strategy:
+Simulate errors and verify error schema; log format smoke tests.
+
+# Subtasks:
+## 1. Custom DRF exception handler [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. Request ID middleware and logging config [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

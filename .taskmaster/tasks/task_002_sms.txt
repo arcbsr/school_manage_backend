@@ -1,0 +1,37 @@
+# Task ID: 2
+# Title: Authentication with JWT (SimpleJWT)
+# Status: in-progress
+# Dependencies: 1
+# Priority: high
+# Description: Implement JWT auth, login/logout endpoints, and token settings.
+# Details:
+Use SimpleJWT for access/refresh tokens, add auth routes, configure lifetimes and rotation.
+
+# Test Strategy:
+Integration tests for login/logout, token refresh, and auth-protected endpoints.
+
+# Subtasks:
+## 1. Install and configure SimpleJWT [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. POST /api/auth/login [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 3. POST /api/auth/logout (blacklist) [in-progress]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 4. Protect sample view with JWT [done]
+### Dependencies: None
+### Description: 
+### Details:
+
+

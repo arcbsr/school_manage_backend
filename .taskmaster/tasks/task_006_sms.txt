@@ -1,0 +1,25 @@
+# Task ID: 6
+# Title: Teacher-class-section-subject assignments
+# Status: pending
+# Dependencies: 5
+# Priority: medium
+# Description: Assign teachers to classes/sections/shifts/subjects with validation.
+# Details:
+Endpoints to manage teaching schedules and course assignments.
+
+# Test Strategy:
+Assignment integrity tests and API tests for create/update.
+
+# Subtasks:
+## 1. Assignment model(s) and constraints [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+
+## 2. API for managing assignments [pending]
+### Dependencies: None
+### Description: 
+### Details:
+
+

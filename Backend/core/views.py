@@ -4,6 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework.request import Request
+from rest_framework.serializers import Serializer, CharField
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 def db_health_view(_request):
@@ -50,3 +55,24 @@ class APIKeyHelloView(APIView):
             'message': 'Hello via API key!' if is_api_key else 'Hello (unauthenticated)',
             'authed_via_api_key': is_api_key,
         })
+
+
+class LogoutSerializer(Serializer):
+    refresh = CharField(required=True, allow_blank=False)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request):
+        serializer = LogoutSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        refresh_token_str = serializer.validated_data["refresh"]
+
+        try:
+            token = RefreshToken(refresh_token_str)
+            token.blacklist()
+        except Exception as exc:  # noqa: BLE001 - return 400 for invalid token inputs
+            raise ValidationError({"refresh": ["Invalid or already blacklisted token."]}) from exc
+
+        return Response({"detail": "Logged out successfully."}, status=status.HTTP_205_RESET_CONTENT)
