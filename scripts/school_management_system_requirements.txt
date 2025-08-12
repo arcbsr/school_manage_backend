@@ -1,0 +1,170 @@
+
+School Management System API — Full Requirements Document
+
+---
+
+1. Overview
+
+Develop a RESTful API backend for a school management system using Python Django and PostgreSQL. The system will handle multiple user roles and provide CRUD operations for school entities such as branches, classes, teachers, students, attendance, results, and reports.
+
+---
+
+2. User Roles and Permissions
+
+Roles:
+- Admin  
+  Full access including management of roles, users, school structures, subjects, attendance edits, and settings.
+
+- Staff  
+  Manage student and teacher records, schedules, attendance edits, and basic administrative tasks.
+
+- Teacher  
+  Manage own profile, assigned classes, upload results, and view attendance.
+
+- Student  
+  View own profile, attendance, results, and reports.
+
+- Parents  
+  View child's profile, attendance, results, and reports.
+
+Authentication:
+- JWT-based authentication for secure API access.
+- Role-based access control (RBAC) for endpoint permissions.
+
+---
+
+3. School Structure Management
+
+Entities & Features:
+- Schools/Branches  
+  Manage multiple branches with details: name, address, contact info.
+
+- Shifts  
+  Morning, afternoon, or other shifts per branch.
+
+- Sections  
+  Sections within classes (e.g., A, B, C).
+
+- Classes  
+  Grade levels or classes (e.g., Grade 1, Grade 2).
+
+- Courses/Subjects  
+  Subjects offered per class/section, managed by Admin.
+
+APIs:
+- CRUD endpoints for each entity.
+- Ability to link classes to shifts and sections.
+- Admin creates and manages all entities.
+
+---
+
+4. User Management
+
+Teachers:
+- Profile fields: Full name, employee ID, contact info, qualifications, photo.
+- Assign subjects taught (subjects pre-created by admin).
+- Assign to classes, sections, and shifts.
+
+Students:
+- Profile fields: Full name, student ID, guardian details, contact info, photo.
+- Enrollment info: Class, section, shift, branch.
+
+Staff:
+- Profile fields similar to teachers, with specific roles.
+
+Parents:
+- Profile linked to one or more students.
+
+APIs:
+- Admin and staff can create, update, delete teachers, students, staff, and parents.
+- Validation for unique IDs and linked entities.
+
+---
+
+5. Attendance Management
+
+- Attendance data will primarily be automated and collected via external attendance devices (e.g., biometric scanners, RFID readers). This integration will be implemented in a future phase.
+- In the current phase:
+  - Admin and authorized staff can manually add, edit, or correct attendance records through the API.
+  - Teachers have read-only access to attendance for their assigned classes.
+  - Students and parents have read-only access to individual student attendance data.
+- Attendance records include:
+  - Date, student, class, status (present, absent, late, excused)
+- Generate attendance reports filtered by student, class, and date range.
+- APIs for CRUD operations on attendance data with role-based permissions.
+
+---
+
+6. Result Management
+
+- Teachers upload exam results by subject, student, and class.
+- Validate result input against enrolled students and subjects.
+- APIs to retrieve and filter results.
+
+---
+
+7. Report Generation
+
+- Generate Admit Cards, Testimonials, Report Cards.
+- PDF generation for reports.
+- APIs to download or email reports.
+
+---
+
+8. Class Assignments
+
+- Assign teachers to classes, sections, and shifts.
+- Manage teaching schedules and courses per teacher.
+
+---
+
+9. Application Settings
+
+- Basic settings: Academic year, session dates, holidays.
+- Theme and branding: Logo upload, color themes.
+- APIs to manage settings accessible only by admin.
+
+---
+
+10. Additional Features (Optional)
+
+- Notifications for attendance, results.
+- Messaging between roles.
+- Data import/export (CSV, Excel).
+- Analytics dashboards.
+
+---
+
+11. Technology & Dependencies
+
+- Python 3.x, Django 5.x
+- PostgreSQL database
+- Django REST Framework
+- JWT authentication (SimpleJWT)
+- Role and permission packages (django-role-permissions, django-guardian)
+- PDF generation (reportlab, xhtml2pdf)
+- Filtering (django-filter)
+- CORS handling (django-cors-headers)
+- Environment config (python-decouple)
+
+---
+
+12. API Endpoint Summary
+
+| Endpoint            | Method  | Description                                  | Roles Allowed          |
+|---------------------|---------|----------------------------------------------|-----------------------|
+| /api/auth/login     | POST    | Login & get JWT token                        | All                   |
+| /api/auth/logout    | POST    | Logout                                       | Authenticated         |
+| /api/roles/         | GET,POST| List & create roles                          | Admin                 |
+| /api/users/         | GET,POST| CRUD teachers, students, staff, parents     | Admin, Staff           |
+| /api/schools/       | GET,POST| Manage branches                              | Admin                 |
+| /api/shifts/        | GET,POST| Manage shifts                                | Admin                 |
+| /api/sections/      | GET,POST| Manage sections                              | Admin                 |
+| /api/classes/       | GET,POST| Manage classes                               | Admin                 |
+| /api/subjects/      | GET,POST| Manage subjects                              | Admin                 |
+| /api/teachers/      | GET,POST| Manage teachers & subject assignments       | Admin, Staff           |
+| /api/students/      | GET,POST| Manage students                              | Admin, Staff           |
+| /api/attendance/    | GET,POST,PUT,DELETE | Manage attendance (manual for now) | Admin, Staff (CRUD); Teacher (Read); Student/Parent (Read) |
+| /api/results/       | GET,POST| Upload & view student results                | Teacher                |
+| /api/reports/       | GET     | Download admit cards, testimonials, reports | Admin, Staff, Parents, Students |
+| /api/settings/      | GET,POST| App configuration                            | Admin                 |

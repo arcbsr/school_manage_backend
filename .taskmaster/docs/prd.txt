@@ -1,0 +1,171 @@
+School Management System API — Product Requirements Document (PRD)
+
+1. Overview
+Build a secure, maintainable, and scalable RESTful API backend for a multi-branch School Management System using Python Django and PostgreSQL. The API will support multiple roles (Admin, Staff, Teacher, Student, Parent) and provide CRUD for core school entities with role-based permissions, reporting, and PDF exports.
+
+2. Objectives and Goals
+- Provide clear, versioned REST APIs for school structure, users, attendance, results, and reports
+- Enforce authentication and role-based authorization across endpoints
+- Allow admins to configure academic settings and branding centrally
+- Enable teachers to upload results and view attendance; students/parents to view academic records
+- Generate PDFs (admit cards, testimonials, report cards)
+
+3. In Scope (Phase 1)
+- Authentication and RBAC (JWT)
+- Entities and CRUD: Branches, Shifts, Sections, Classes, Subjects
+- User management: Teachers, Students, Staff, Parents (profiles, linking)
+- Manual attendance operations, filtering, and reporting
+- Result upload and retrieval
+- Report generation to PDF (admit cards, testimonials, report cards)
+- Settings: academic year, sessions, holidays, branding (logo, color theme)
+
+4. Out of Scope (Phase 1)
+- Physical attendance device integration (biometric/RFID) — future phase
+- Notifications and in-app messaging — optional for later phases
+- Data import/export (bulk), analytics dashboards — optional
+
+5. Stakeholders and Roles
+- Admin: Full access; manages users, roles, structure, attendance corrections, settings
+- Staff: Manage student/teacher records, schedules, attendance corrections
+- Teacher: Manage own profile, assigned classes, upload results, view class attendance
+- Student: View profile, attendance, results, reports
+- Parent: View linked student(s) profile, attendance, results, reports
+
+6. Assumptions
+- Single logical application with multi-branch support
+- PostgreSQL as primary datastore
+- All date/time fields stored in UTC; branch-level local time rendering is a client concern
+- PDF generation occurs synchronously for typical document sizes (<5s target)
+
+7. Non-Functional Requirements
+- Security: JWT-based auth, RBAC, input validation, OWASP best practices, HTTPS-only
+- Performance: Typical list endpoints <300ms P95 for 1k records, server-side pagination
+- Reliability: Graceful error handling with consistent error schema; idempotent POST/PUT where applicable using natural keys
+- Observability: Structured logging, request IDs, basic audit trails for create/update/delete on sensitive resources
+- Compatibility: Django 5.x, DRF, Python 3.x, PostgreSQL 14+
+- CORS: Configurable allowlist
+
+8. Success Metrics
+- <300ms P95 for frequently used GET endpoints at typical load
+- <1s P95 for PDF generation of single student documents
+- Zero critical security vulnerabilities in dependency scans
+- 95% of endpoints covered by integration tests on core flows
+
+9. High-Level Architecture
+- Django + Django REST Framework service
+- PostgreSQL database
+- JWT (SimpleJWT) for auth
+- Role/permission libraries: django-role-permissions or django-guardian (final choice during implementation)
+- PDF: reportlab or xhtml2pdf
+- Filtering: django-filter
+- CORS: django-cors-headers
+- Config: python-decouple, dotenv
+
+10. Entities (Data Model – high level)
+- Branch (School): name, address, contact
+- Shift: name (e.g., Morning/Afternoon), branch
+- Section: name (A/B/C), class
+- Class (Grade): name/level, branch, shift
+- Subject: name/code, class
+- Teacher: profile (name, employee_id, contact, qualifications, photo), assignments (classes/sections/subjects/shifts)
+- Student: profile (name, student_id, guardian details, contact, photo), enrollment (class, section, shift, branch)
+- Staff: profile
+- Parent/Guardian: profile; links to one or more students
+- Enrollment: mapping student → class/section/shift/branch (if modeled explicitly)
+- Attendance: date, student, class, status (present|absent|late|excused)
+- Result: student, subject, class, exam metadata, marks/grade
+- Settings: academic year, session dates, holidays, branding (logo, colors)
+
+11. Permissions Model (RBAC – summary)
+- Admin: Full CRUD on all entities; can manage roles, settings, attendance edits
+- Staff: CRUD on students/teachers (scoped by policy), schedules, attendance edits
+- Teacher: Read on assigned classes; upload results for assigned subjects/classes; view attendance (read-only)
+- Student/Parent: Read-only on own/linked resources (profile, attendance, results, reports)
+
+12. API Endpoints (Initial)
+Authentication
+- POST /api/auth/login → issue JWT
+- POST /api/auth/logout → revoke/blacklist token
+
+Roles/Users
+- GET/POST /api/roles/ → list/create roles (Admin only)
+- GET/POST /api/users/ → admin/staff CRUD of teachers, students, staff, parents
+
+School Structure
+- GET/POST /api/schools/ → manage branches (Admin)
+- GET/POST /api/shifts/ → manage shifts (Admin)
+- GET/POST /api/sections/ → manage sections (Admin)
+- GET/POST /api/classes/ → manage classes (Admin)
+- GET/POST /api/subjects/ → manage subjects (Admin)
+
+Teachers/Students
+- GET/POST /api/teachers/ → manage teachers & assignments (Admin, Staff)
+- GET/POST /api/students/ → manage students (Admin, Staff)
+
+Attendance
+- GET/POST/PUT/DELETE /api/attendance/ → manual attendance CRUD (Admin, Staff)
+- GET /api/attendance/?filters → Teacher/Student/Parent read per permissions
+
+Results
+- GET/POST /api/results/ → teachers upload and view; role-based reads
+
+Reports
+- GET /api/reports/ → download admit cards, testimonials, report cards (role access varies)
+
+Settings
+- GET/POST /api/settings/ → app configuration (Admin)
+
+13. Validation and Business Rules (examples)
+- Unique IDs: employee_id (Teacher), student_id (Student), subject code
+- Enrollment consistency: result upload only for enrolled students and valid subject-class mappings
+- Attendance: one record per student/date/day per class; updates tracked/audited
+- Pagination and filtering for all list endpoints
+
+14. Error Handling and Response Conventions
+- Consistent error schema: { code, message, details? }
+- Use standard HTTP status codes; 422 for validation errors
+- DRF-style pagination: { count, next, previous, results }
+
+15. Reporting & PDF
+- Synchronous PDF generation for single-student docs
+- Templates for admit card, testimonial, report card
+- File responses with appropriate content-type and caching headers
+
+16. Configuration and Settings
+- Environment-driven config (DB, CORS, JWT secrets)
+- Admin-managed academic year/session/holidays and branding assets
+
+17. Security & Compliance
+- JWT access/refresh with expiration and rotation
+- RBAC enforced at view/serializer level
+- Password hashing per Django best practices
+- Audit logging on sensitive operations (attendance edits, results updates)
+
+18. Testing Strategy
+- Unit tests for serializers, permission classes, utils
+- API tests for core CRUD flows and role access
+- Snapshot tests for generated PDFs where feasible (hash/byte-length checks)
+
+19. Milestones (Phase 1)
+- M1: Auth & RBAC scaffolding; basic entities (Branches, Classes, Shifts, Sections, Subjects)
+- M2: User management (Teachers, Students, Staff, Parents) with validation
+- M3: Manual attendance CRUD + filtering + reporting
+- M4: Results upload/retrieval; permissions and validations
+- M5: Reports (PDF) for admit cards, testimonials, report cards
+- M6: Settings; CORS; deployment configuration; test coverage target
+
+20. Risks & Mitigations
+- PDF performance/quality → pre-rendered templates, optimize fonts/assets
+- Complex RBAC matrix → centralize permission policies, thorough tests
+- Data integrity (enrollment mismatches) → strict foreign keys, validations, admin tooling
+
+21. Open Questions
+- Exact exam types/terms and grading scheme variants?
+- Do branches have independent academic calendars?
+- Pagination defaults and maximums for large institutions?
+
+22. Appendix: Technology Stack
+- Python 3.x, Django 5.x, DRF
+- PostgreSQL 14+
+- JWT (SimpleJWT), django-role-permissions/django-guardian
+- reportlab/xhtml2pdf, django-filter, django-cors-headers, python-decouple

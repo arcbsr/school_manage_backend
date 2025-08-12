@@ -1,0 +1,444 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Project initialization and configuration",
+        "description": "Initialize Django + DRF project with PostgreSQL, base settings, CORS, environment config, and tooling.",
+        "status": "in-progress",
+        "priority": "high",
+        "dependencies": [],
+        "details": "Set up Django 5.x project, DRF, PostgreSQL connection, python-decouple, django-cors-headers, basic settings structure, and app scaffolding.",
+        "testStrategy": "Run migrations, health endpoint, and settings smoke tests.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Django project and core app",
+            "status": "done"
+          },
+          {
+            "id": 2,
+            "title": "Configure PostgreSQL and env variables",
+            "status": "in-progress"
+          },
+          {
+            "id": 3,
+            "title": "Install and configure DRF, CORS, decouple",
+            "status": "done"
+          },
+          {
+            "id": 4,
+            "title": "Base settings (logging, timezone, pagination)",
+            "status": "done"
+          },
+          {
+            "id": 5,
+            "title": "Health check endpoint",
+            "status": "done"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Authentication with JWT (SimpleJWT)",
+        "description": "Implement JWT auth, login/logout endpoints, and token settings.",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "details": "Use SimpleJWT for access/refresh tokens, add auth routes, configure lifetimes and rotation.",
+        "testStrategy": "Integration tests for login/logout, token refresh, and auth-protected endpoints.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and configure SimpleJWT",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "POST /api/auth/login",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "POST /api/auth/logout (blacklist)",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Protect sample view with JWT",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "RBAC and permissions framework",
+        "description": "Set up role-based access using django-role-permissions or django-guardian.",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          "2"
+        ],
+        "details": "Define roles: Admin, Staff, Teacher, Student, Parent. Apply permissions to viewsets/serializers.",
+        "testStrategy": "Role matrix tests ensuring allowed/denied access.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Choose and configure permissions library",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Define role constants and helpers",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Permission classes for DRF views",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Core school structure models and CRUD",
+        "description": "Implement Branch, Shift, Section, Class, Subject with CRUD endpoints and filters.",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          "3"
+        ],
+        "details": "Create models, serializers, viewsets, routers; add django-filter; pagination; RBAC for Admin on writes.",
+        "testStrategy": "Model tests, serializer validation tests, list/create/update/delete API tests.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Branch model + CRUD (/api/schools/)",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Shift model + CRUD (/api/shifts/)",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Class model + CRUD (/api/classes/)",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Section model + CRUD (/api/sections/)",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Subject model + CRUD (/api/subjects/)",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "User profiles and management",
+        "description": "Implement Teacher, Student, Staff, Parent profiles and linking.",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          "4"
+        ],
+        "details": "Profiles with unique IDs, enrollment fields for students, links between parents and students; RBAC for Admin/Staff writes.",
+        "testStrategy": "Profile CRUD tests, unique constraints, linking validations.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Teacher profile + assignments endpoint (/api/teachers/)",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Student profile + enrollment (/api/students/)",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Staff profile management (/api/users/)",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Parent profile + link students (/api/users/)",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Teacher-class-section-subject assignments",
+        "description": "Assign teachers to classes/sections/shifts/subjects with validation.",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          "5"
+        ],
+        "details": "Endpoints to manage teaching schedules and course assignments.",
+        "testStrategy": "Assignment integrity tests and API tests for create/update.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Assignment model(s) and constraints",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "API for managing assignments",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Manual attendance management",
+        "description": "CRUD for attendance with role-based permissions and filters.",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          "5"
+        ],
+        "details": "Admin/Staff can add/edit/delete; Teacher/Student/Parent read-only per scope. One record per student per date per class.",
+        "testStrategy": "Validation for duplicates, filter tests (by date, class, student), and permissions.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Attendance model and validators",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "CRUD /api/attendance/ with filters",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Reporting: per student/class/date range",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Results management",
+        "description": "Teachers upload results; role-based retrieval and validation against enrollment.",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          "6"
+        ],
+        "details": "Ensure results map to enrolled students and valid subject-class pairs.",
+        "testStrategy": "Upload tests, invalid enrollment rejections, list/filter tests.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Result model and validation rules",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "POST/GET /api/results/ with filters",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "PDF report generation",
+        "description": "Generate admit cards, testimonials, and report cards as PDFs.",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          "5",
+          "8"
+        ],
+        "details": "Use reportlab or xhtml2pdf; build templates; synchronous generation for single-student docs.",
+        "testStrategy": "Byte-size/hash snapshot tests; content checks for key fields.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Admit card template + endpoint (/api/reports/)",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Testimonial template + endpoint",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Report card template + endpoint",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Settings and configuration endpoints",
+        "description": "Admin endpoints for academic year, sessions, holidays, branding.",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          "1",
+          "3"
+        ],
+        "details": "Model(s) for settings; file upload for logo; color theme storage.",
+        "testStrategy": "CRUD tests; file upload tests; RBAC checks.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Settings model and serializer",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "GET/POST /api/settings/",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Observability and error handling",
+        "description": "Structured logging, request IDs, consistent error schema, and global exception handling.",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          "1",
+          "2"
+        ],
+        "details": "Add middleware for request IDs; DRF exception handler returning {code, message, details}.",
+        "testStrategy": "Simulate errors and verify error schema; log format smoke tests.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Custom DRF exception handler",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Request ID middleware and logging config",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Security hardening",
+        "description": "Best practices for auth, password hashing, CORS allowlist, and headers.",
+        "status": "pending",
+        "priority": "high",
+        "dependencies": [
+          "2",
+          "3"
+        ],
+        "details": "Secure settings, HTTPS assumptions, CSRF where applicable, and helmet-like headers via Django middleware.",
+        "testStrategy": "Security lint checks and penetration smoke tests (where applicable).",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "CORS allowlist and secure settings",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Audit password hashing and token lifetimes",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "Pagination and filtering standards",
+        "description": "Apply DRF pagination and django-filter consistently across list endpoints.",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          "4",
+          "5"
+        ],
+        "details": "Standardize page size, max limits, and filter fields per resource.",
+        "testStrategy": "List endpoints tests verifying pagination and filters.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Global pagination settings",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Add filters to all list endpoints",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "title": "Deployment and environment setup",
+        "description": "Production-ready settings, environment files, and basic CI config.",
+        "status": "pending",
+        "priority": "medium",
+        "dependencies": [
+          "1",
+          "2"
+        ],
+        "details": ".env templates, DEBUG flags, allowed hosts, database URLs, and simple CI (pytest).",
+        "testStrategy": "CI passes with lint + unit/integration tests.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": ".env.example and secrets management guidance",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Basic CI workflow to run tests",
+            "status": "pending"
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "title": "Documentation",
+        "description": "API docs with endpoints, auth, and roles; developer setup guide.",
+        "status": "pending",
+        "priority": "low",
+        "dependencies": [
+          "2",
+          "4",
+          "5",
+          "7",
+          "8"
+        ],
+        "details": "README updates, API overview, and examples for auth and core flows.",
+        "testStrategy": "Manual verification and doc linting if available.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Developer setup and runbook",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Endpoint reference and examples",
+            "status": "pending"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-12T18:00:13.295Z",
+      "updated": "2025-08-12T18:23:46.552Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
