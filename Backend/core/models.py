@@ -34,14 +34,33 @@ class Shift(TimeStampedModel):
         return f"{self.name} ({self.start_time}-{self.end_time})"
 
 
+class AcademicSession(TimeStampedModel):
+    year = models.PositiveIntegerField(unique=True)
+    is_active = models.BooleanField(default=True)
+    is_current = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-year"]
+
+    def __str__(self) -> str:
+        return str(self.year)
+
+
 class SchoolClass(TimeStampedModel):
     name = models.CharField(max_length=100)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='classes')
     shift = models.ForeignKey(Shift, on_delete=models.PROTECT, related_name='classes')
+    academic_session = models.ForeignKey(
+        AcademicSession,
+        on_delete=models.PROTECT,
+        related_name='classes',
+        null=True,
+        blank=True,
+    )
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("name", "branch", "shift")
+        unique_together = ("name", "branch", "shift", "academic_session")
         ordering = ["name"]
 
     def __str__(self) -> str:

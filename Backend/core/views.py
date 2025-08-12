@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import serializers
-from .models import Branch, Shift, SchoolClass, Section, Subject
+from .models import Branch, Shift, AcademicSession, SchoolClass, Section, Subject
 from .permissions import IsAdminWriteOrReadOnly
 
 
@@ -126,6 +126,10 @@ class ShiftViewSet(viewsets.ModelViewSet):
 
 
 class SchoolClassSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        if not attrs.get("academic_session"):
+            raise serializers.ValidationError({"academic_session": ["This field is required."]})
+        return super().validate(attrs)
     class Meta:
         model = SchoolClass
         fields = [
@@ -133,6 +137,7 @@ class SchoolClassSerializer(serializers.ModelSerializer):
             "name",
             "branch",
             "shift",
+            "academic_session",
             "is_active",
             "created_at",
             "updated_at",
@@ -141,11 +146,12 @@ class SchoolClassSerializer(serializers.ModelSerializer):
 
 
 class SchoolClassViewSet(viewsets.ModelViewSet):
-    queryset = SchoolClass.objects.select_related("branch", "shift").all()
+    queryset = SchoolClass.objects.select_related("branch", "shift", "academic_session").all()
     serializer_class = SchoolClassSerializer
     permission_classes = [IsAdminWriteOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["is_active", "branch", "shift"]
+    filterset_fields = ["is_active", "branch", "shift", "academic_session"]
     search_fields = ["name"]
     ordering_fields = ["name", "created_at"]
 
@@ -196,3 +202,26 @@ class SubjectViewSet(viewsets.ModelViewSet):
     filterset_fields = ["is_active"]
     search_fields = ["name", "code"]
     ordering_fields = ["name", "created_at"]
+
+
+class AcademicSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AcademicSession
+        fields = [
+            "id",
+            "year",
+            "is_active",
+            "is_current",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class AcademicSessionViewSet(viewsets.ModelViewSet):
+    queryset = AcademicSession.objects.all()
+    serializer_class = AcademicSessionSerializer
+    permission_classes = [IsAdminWriteOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["year"]
+    ordering_fields = ["year", "created_at"]
