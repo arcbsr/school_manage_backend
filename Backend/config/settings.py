@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'drf_spectacular',
+    'rolepermissions',
     # Local apps
     'core',
 ]
@@ -154,6 +155,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+# django-role-permissions
+ROLEPERMISSIONS_MODULE = 'core.roles'
 
 # SimpleJWT settings (defaults are fine for dev; override via env if needed)
 from datetime import timedelta

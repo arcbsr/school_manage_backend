@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.http import JsonResponse
 from core.views import db_health_view, ProtectedHelloView, APIKeyHelloView, LogoutView
 from rest_framework_simplejwt.views import (
@@ -44,4 +44,6 @@ urlpatterns = [
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     # API key sample
     path('api/hello-api-key', APIKeyHelloView.as_view(), name='hello-api-key'),
+    # Core API
+    path('api/', include('core.urls')),
 ]

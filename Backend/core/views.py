@@ -9,6 +9,11 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.serializers import Serializer, CharField
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import serializers
+from .models import Branch, Shift, SchoolClass, Section, Subject
+from .permissions import IsAdminWriteOrReadOnly
 
 
 def db_health_view(_request):
@@ -76,3 +81,118 @@ class LogoutView(APIView):
             raise ValidationError({"refresh": ["Invalid or already blacklisted token."]}) from exc
 
         return Response({"detail": "Logged out successfully."}, status=status.HTTP_205_RESET_CONTENT)
+
+
+class BranchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Branch
+        fields = ["id", "name", "address", "is_active", "created_at", "updated_at"]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class BranchViewSet(viewsets.ModelViewSet):
+    queryset = Branch.objects.all()
+    serializer_class = BranchSerializer
+    permission_classes = [IsAdminWriteOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["is_active"]
+    search_fields = ["name", "address"]
+    ordering_fields = ["name", "created_at"]
+
+
+class ShiftSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shift
+        fields = [
+            "id",
+            "name",
+            "start_time",
+            "end_time",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class ShiftViewSet(viewsets.ModelViewSet):
+    queryset = Shift.objects.all()
+    serializer_class = ShiftSerializer
+    permission_classes = [IsAdminWriteOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["is_active"]
+    search_fields = ["name"]
+    ordering_fields = ["start_time", "name"]
+
+
+class SchoolClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolClass
+        fields = [
+            "id",
+            "name",
+            "branch",
+            "shift",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class SchoolClassViewSet(viewsets.ModelViewSet):
+    queryset = SchoolClass.objects.select_related("branch", "shift").all()
+    serializer_class = SchoolClassSerializer
+    permission_classes = [IsAdminWriteOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["is_active", "branch", "shift"]
+    search_fields = ["name"]
+    ordering_fields = ["name", "created_at"]
+
+
+class SectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = [
+            "id",
+            "name",
+            "school_class",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class SectionViewSet(viewsets.ModelViewSet):
+    queryset = Section.objects.select_related("school_class").all()
+    serializer_class = SectionSerializer
+    permission_classes = [IsAdminWriteOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["is_active", "school_class"]
+    search_fields = ["name"]
+    ordering_fields = ["name", "created_at"]
+
+
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = [
+            "id",
+            "name",
+            "code",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class SubjectViewSet(viewsets.ModelViewSet):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+    permission_classes = [IsAdminWriteOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["is_active"]
+    search_fields = ["name", "code"]
+    ordering_fields = ["name", "created_at"]
