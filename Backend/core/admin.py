@@ -18,8 +18,8 @@ class ShiftAdmin(admin.ModelAdmin):
 
 @admin.register(SchoolClass)
 class SchoolClassAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "branch", "shift", "academic_session", "is_active")
-    list_filter = ("is_active", "branch", "shift", "academic_session")
+    list_display = ("id", "name", "branch", "is_active")
+    list_filter = ("is_active", "branch")
     search_fields = ("name",)
 
 

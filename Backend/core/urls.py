@@ -7,6 +7,7 @@ from .views import (
     SchoolClassViewSet,
     SectionViewSet,
     SubjectViewSet,
+    BranchDataView,
 )
 
 
@@ -20,6 +21,7 @@ router.register(r'sessions', AcademicSessionViewSet, basename='session')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('reports/branch_data', BranchDataView.as_view(), name='reports-branch-data'),
 ]
 
 

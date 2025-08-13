@@ -1,0 +1,19 @@
+# Core
+Django==4.2.23
+djangorestframework==3.16.0
+django-filter==25.1
+django-cors-headers==3.8.0
+python-decouple==3.6
+
+# Auth
+djangorestframework-simplejwt==5.2.0
+
+# RBAC
+django-role-permissions==3.2.0
+
+# API schema / docs
+drf-spectacular==0.28.0
+
+# Optional (enable if switching to Postgres)
+# psycopg2-binary==2.9.9
+

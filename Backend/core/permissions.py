@@ -23,6 +23,9 @@ class IsAdminWriteOrReadOnly(BasePermission):
         user = request.user
         if request.method in SAFE_METHODS:
             return bool(user and user.is_authenticated)
+        # Allow superusers to always write
+        if getattr(user, 'is_superuser', False):
+            return True
         return bool(user and user.is_authenticated and has_permission(user, 'manage_school'))
 
 

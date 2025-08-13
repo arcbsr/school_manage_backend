@@ -11,6 +11,7 @@ from rest_framework.serializers import Serializer, CharField
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import serializers
 from .models import Branch, Shift, AcademicSession, SchoolClass, Section, Subject
 from .permissions import IsAdminWriteOrReadOnly
@@ -126,18 +127,12 @@ class ShiftViewSet(viewsets.ModelViewSet):
 
 
 class SchoolClassSerializer(serializers.ModelSerializer):
-    def validate(self, attrs):
-        if not attrs.get("academic_session"):
-            raise serializers.ValidationError({"academic_session": ["This field is required."]})
-        return super().validate(attrs)
     class Meta:
         model = SchoolClass
         fields = [
             "id",
             "name",
             "branch",
-            "shift",
-            "academic_session",
             "is_active",
             "created_at",
             "updated_at",
@@ -146,12 +141,11 @@ class SchoolClassSerializer(serializers.ModelSerializer):
 
 
 class SchoolClassViewSet(viewsets.ModelViewSet):
-    queryset = SchoolClass.objects.select_related("branch", "shift", "academic_session").all()
+    queryset = SchoolClass.objects.select_related("branch").all()
     serializer_class = SchoolClassSerializer
     permission_classes = [IsAdminWriteOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ["is_active", "branch", "shift"]
-    filterset_fields = ["is_active", "branch", "shift", "academic_session"]
+    filterset_fields = ["is_active", "branch"]
     search_fields = ["name"]
     ordering_fields = ["name", "created_at"]
 
@@ -225,3 +219,57 @@ class AcademicSessionViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["year"]
     ordering_fields = ["year", "created_at"]
+
+
+# Combined options endpoint
+class ClassOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolClass
+        fields = ["id", "name", "branch", "is_active"]
+
+
+class SectionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = ["id", "name", "school_class", "is_active"]
+
+
+class ShiftOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shift
+        fields = ["id", "name", "start_time", "end_time", "is_active"]
+
+
+class SessionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AcademicSession
+        fields = ["id", "year", "is_active", "is_current"]
+
+
+class BranchDataSerializer(serializers.Serializer):
+    classes = ClassOptionSerializer(many=True)
+    sections = SectionOptionSerializer(many=True)
+    shifts = ShiftOptionSerializer(many=True)
+    sessions = SessionOptionSerializer(many=True)
+
+
+class BranchDataView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={200: OpenApiResponse(response=BranchDataSerializer)},
+        summary="Get active classes, sections, shifts, sessions (branch data)",
+    )
+    def get(self, request):
+        classes_qs = SchoolClass.objects.filter(is_active=True).select_related("branch").only("id", "name", "branch_id", "is_active")
+        sections_qs = Section.objects.filter(is_active=True).select_related("school_class").only("id", "name", "school_class_id", "is_active")
+        shifts_qs = Shift.objects.filter(is_active=True).only("id", "name", "start_time", "end_time", "is_active")
+        sessions_qs = AcademicSession.objects.filter(is_active=True).only("id", "year", "is_active", "is_current")
+
+        payload = {
+            "classes": ClassOptionSerializer(classes_qs, many=True).data,
+            "sections": SectionOptionSerializer(sections_qs, many=True).data,
+            "shifts": ShiftOptionSerializer(shifts_qs, many=True).data,
+            "sessions": SessionOptionSerializer(sessions_qs, many=True).data,
+        }
+        return Response(payload)

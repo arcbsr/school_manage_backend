@@ -1,0 +1,27 @@
+---
+description: Enforce API key (X-API-Key) as default authentication for all APIs
+globs: Backend/config/settings.py, Backend/core/authentication.py, Backend/core/**/*.py
+alwaysApply: true
+---
+
+- **Default permissions and auth**
+  - Set `REST_FRAMEWORK.DEFAULT_PERMISSION_CLASSES = ['rest_framework.permissions.IsAuthenticated']`
+  - Set `REST_FRAMEWORK.DEFAULT_AUTHENTICATION_CLASSES` to prefer API key first, JWT second:
+    ```python
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+      'core.authentication.HeaderAPIKeyAuthentication',
+      'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+    ```
+
+- **API key header**
+  - Use header `X-API-Key: <key>` mapped to `request.META['HTTP_X_API_KEY']`
+  - Keys configured in `[settings.py](mdc:Backend/config/settings.py)` as `API_KEYS`
+
+- **View overrides**
+  - Avoid `AllowAny` unless explicitly required (e.g., public health)
+  - Use `permission_classes = [IsAuthenticated]` in views when overriding defaults
+
+- **Spectacular docs**
+  - Keep security schemes for both API Key and Bearer in `SPECTACULAR_SETTINGS` so Swagger can authorize either method
+
